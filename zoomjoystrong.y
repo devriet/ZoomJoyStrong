@@ -10,14 +10,18 @@
 #include <stdio.h>
 #include "zoomjoystrong.h"
 
-
+int yylex();
+int yyerror(char *s);
 %}
 
 %start stmt_list
-
-
-
-%token RECTANGLE SET_COLOR CIRCLE LINE POINT INT FLOAT
+%union {
+	int ival;
+	float fval;
+}
+%token RECTANGLE SET_COLOR CIRCLE LINE POINT
+%token <ival> INT
+%token <fval> FLOAT
 
 %%
 
@@ -47,47 +51,48 @@ expr:	point
 	;
 
 point:	POINT INT INT
-	{ printf("got a point\n") };
+	{ /*printf("got a point\n");
+	printf("x: %d\ty: %d", $2, $3);*/
+	point($2, $3); };
 
 circle:	CIRCLE INT INT INT
-	{ printf("got a circle\n") };
+	{ /*printf("got a circle\n");*/
+	circle($2, $3, $4); };
 
 rectangle:
 	RECTANGLE INT INT INT INT
-	{ printf("got a rectangle\n") };
+	{ /*printf("got a rectangle\n");*/
+	rectangle($2, $3, $4, $5); };
 
 line:	LINE INT INT INT INT
-	{ printf("got a line\n") };
+	{ /*printf("got a line\n");*/
+	line($2, $3, $4, $5); };
 
 int:	INT
-	{ printf("got an int\n") };
+	{ printf("got an int\n"); };
 
 float:	FLOAT
-	{ printf("got a float\n") };
+	{ printf("got a float\n"); };
 
 set_color:
 	SET_COLOR INT INT INT
-	{ printf("got a color\n") };
+	{ /*printf("got a color\n");*/
+	set_color($2, $3, $4); };
 
 %%
 
 
-main()
-{
+int main() {
+	setup();
 	return(yyparse());
+	//finish();
 }
 
-yyerror(s)
-char *s;
-{
+int yyerror(char *s) {
 	fprintf(stderr, "%s\n",s);
 }
 
-yywrap()
-{
+int yywrap() {
 	return(1);
 }
-
-
-
 

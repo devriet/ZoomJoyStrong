@@ -8,26 +8,28 @@
  */
 
 #include <stdio.h>
-#include "y.tab.h"
+#include "zoomjoystrong.tab.h"
 
 %}
 
 %%
 
 " "	;
+";"	;
+rectangle	{ return(RECTANGLE); }
 
-'rectangle'	{ return(RECTANGLE); }
+set_color	{ return(SET_COLOR); }
 
-'set_color'	{ return(SET_COLOR); }
+circle		{ return(CIRCLE); }
 
-'circle'	{ return(CIRCLE); }
+line		{ return(LINE); }
 
-'line'		{ return(LINE); }
+point		{ return(POINT); }
 
-'point'		{ return(POINT); }
+[0-9]+"."[0-9]*	{ yylval.fval = atof(yytext);
+		return(FLOAT); }
 
-'int'		{ return(INT); }
-
-'float'		{ return(FLOAT); }
+[0-9]+		{ yylval.ival = atoi(yytext);
+		return(INT); }
 
 %%
